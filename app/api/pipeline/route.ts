@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server'
 import { getPipelineEntries } from '../../../lib/google-sheets'
 
-export async function GET() {
+// Clients must send Authorization: Bearer $SETUP_TOKEN
+export async function GET(request: Request) {
+  const authHeader = request.headers.get('authorization')
+  if (!process.env.SETUP_TOKEN || authHeader !== `Bearer ${process.env.SETUP_TOKEN}`) {
+    return new NextResponse('Unauthorized', { status: 401 })
+  }
+
   try {
     const entries = await getPipelineEntries()
     return NextResponse.json(entries)
