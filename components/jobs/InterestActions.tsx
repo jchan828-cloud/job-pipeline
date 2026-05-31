@@ -2,7 +2,6 @@ import type { JobPosting } from '../../lib/types'
 import { Button } from '../ui/Button'
 
 interface InterestActionsProps {
-  jobId: string
   currentStatus: JobPosting['status']
   url: string
   onAction: (action: 'interested' | 'skipped') => void

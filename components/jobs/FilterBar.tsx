@@ -3,7 +3,7 @@ import type { FilterState } from '../../lib/types'
 interface FilterBarProps {
   activeFilter: FilterState['filter']
   activeCompany: string | null
-  minScore: number | null
+  minScore: number | null  // accepted for state passthrough; no UI control yet
   counts: { all: number; new: number; interested: number; skipped: number }
   companies: string[]
   onChange: (filters: FilterState) => void

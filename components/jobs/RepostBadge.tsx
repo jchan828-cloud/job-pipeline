@@ -8,7 +8,9 @@ interface RepostBadgeProps {
 }
 
 function weeksAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime()
+  const time = new Date(dateStr).getTime()
+  if (!Number.isFinite(time)) return 'an unknown date'
+  const diff = Math.max(0, Date.now() - time)
   const weeks = Math.round(diff / (7 * 24 * 60 * 60 * 1000))
   return weeks <= 1 ? '1 week ago' : `${weeks} weeks ago`
 }
