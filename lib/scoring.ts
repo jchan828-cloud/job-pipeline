@@ -175,5 +175,7 @@ export function processScrapedJob(job: ScrapedJob): JobPosting {
     ...reqs,
     notes: "",
     isRepost: false,
+    originalJobId: undefined,
+    repostChanges: [],
   };
 }
