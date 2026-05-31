@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
 import { JobCard } from '../JobCard'
-import type { JobPosting } from '../../lib/types'
+import type { JobPosting } from '../../../lib/types'
 
 const job: JobPosting = {
   id: 'j1', title: 'Director, Procurement', company: 'BMO Financial',

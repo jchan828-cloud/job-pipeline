@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { PipelineCard } from '../PipelineCard'
-import type { PipelineEntry } from '../../lib/types'
+import type { PipelineEntry } from '../../../lib/types'
 
 const entry: PipelineEntry = {
   id: 'j1', company: 'BMO Financial', title: 'Director, Procurement',
