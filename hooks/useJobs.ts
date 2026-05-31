@@ -3,13 +3,8 @@
 import useSWR from 'swr'
 import type { JobPosting, FilterState } from '../lib/types'
 
-function getAuthHeader(): Record<string, string> {
-  const token = process.env.NEXT_PUBLIC_API_TOKEN
-  return token ? { Authorization: `Bearer ${token}` } : {}
-}
-
 const fetcher = (url: string) =>
-  fetch(url, { headers: getAuthHeader() }).then(r => {
+  fetch(url).then(r => {
     if (!r.ok) throw new Error('Failed to fetch jobs')
     return r.json() as Promise<JobPosting[]>
   })

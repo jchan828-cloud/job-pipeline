@@ -4,11 +4,6 @@ import { useState } from 'react'
 import { mutate } from 'swr'
 import type { JobPosting } from '../lib/types'
 
-function getAuthHeader(): Record<string, string> {
-  const token = process.env.NEXT_PUBLIC_API_TOKEN
-  return token ? { Authorization: `Bearer ${token}` } : {}
-}
-
 export function useJobActions() {
   const [loadingId, setLoadingId] = useState<string | null>(null)
 
@@ -24,7 +19,7 @@ export function useJobActions() {
     try {
       const res = await fetch(`/api/jobs/${job.id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
       })
       if (!res.ok) throw new Error('Update failed')

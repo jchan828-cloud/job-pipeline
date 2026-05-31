@@ -1,18 +1,15 @@
+// Security: protect this deployment with Vercel Deployment Protection
+// (vercel.com/docs/security/deployment-protection) before exposing to the internet.
+// Application-level auth is intentionally omitted for this single-user personal tool.
 import { NextResponse } from 'next/server'
 import { getJobById, updateJobStatus, appendPipelineEntry } from '../../../../lib/google-sheets'
 
-// Clients must send Authorization: Bearer $SETUP_TOKEN
 const VALID_STATUSES = ['New', 'Reviewed', 'Interested', 'Skipped', 'Added to Pipeline', 'Dismissed'] as const
 
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const authHeader = request.headers.get('authorization')
-  if (!process.env.SETUP_TOKEN || authHeader !== `Bearer ${process.env.SETUP_TOKEN}`) {
-    return new NextResponse('Unauthorized', { status: 401 })
-  }
-
   try {
     // Next.js 15/16: params is a Promise — await it
     const { id } = await params

@@ -1,13 +1,10 @@
+// Security: protect this deployment with Vercel Deployment Protection
+// (vercel.com/docs/security/deployment-protection) before exposing to the internet.
+// Application-level auth is intentionally omitted for this single-user personal tool.
 import { NextResponse } from 'next/server'
 import { getJobs } from '../../../lib/google-sheets'
 
-// Clients must send Authorization: Bearer $SETUP_TOKEN
-export async function GET(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  if (!process.env.SETUP_TOKEN || authHeader !== `Bearer ${process.env.SETUP_TOKEN}`) {
-    return new NextResponse('Unauthorized', { status: 401 })
-  }
-
+export async function GET() {
   try {
     const jobs = await getJobs()
     return NextResponse.json(jobs)
