@@ -1,4 +1,6 @@
 // components/ui/EmptyState.tsx
+import { Button } from './Button'
+
 interface EmptyStateProps {
   message: string
   actionLabel?: string
@@ -21,19 +23,9 @@ export function EmptyState({ message, actionLabel, onAction }: EmptyStateProps) 
     >
       <p style={{ fontSize: 14 }}>{message}</p>
       {actionLabel && onAction && (
-        <button
-          onClick={onAction}
-          style={{
-            fontSize: 13,
-            color: 'var(--blue)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            textDecoration: 'underline',
-          }}
-        >
+        <Button variant="ghost" onClick={onAction}>
           {actionLabel}
-        </button>
+        </Button>
       )}
     </div>
   )

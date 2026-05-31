@@ -1,14 +1,9 @@
 // components/ui/Button.tsx
 type ButtonVariant = 'primary' | 'danger' | 'ghost'
 
-interface ButtonProps {
-  children: React.ReactNode
+interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   variant?: ButtonVariant
-  onClick?: () => void
-  disabled?: boolean
   loading?: boolean
-  'aria-label'?: string
-  'aria-pressed'?: boolean
   type?: 'button' | 'submit'
 }
 
@@ -20,15 +15,14 @@ const VARIANT_STYLES: Record<ButtonVariant, React.CSSProperties> = {
 
 export function Button({
   children, variant = 'primary', onClick, disabled, loading,
-  'aria-label': ariaLabel, 'aria-pressed': ariaPressed, type = 'button',
+  type = 'button', style: extraStyle, ...rest
 }: ButtonProps) {
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      aria-label={ariaLabel}
-      aria-pressed={ariaPressed}
+      aria-busy={loading || undefined}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -41,7 +35,9 @@ export function Button({
         opacity: disabled || loading ? 0.5 : 1,
         transition: 'opacity 0.15s',
         ...VARIANT_STYLES[variant],
+        ...extraStyle,
       }}
+      {...rest}
     >
       {loading ? (
         <span
