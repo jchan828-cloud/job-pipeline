@@ -320,6 +320,8 @@ export async function getJobById(
   })
   if (!idsRes.data.values) return null
   let rowNumber = -1
+  // Loop starts at i=1 to skip header row (row 0).
+  // rowNumber = i+1 because Sheets rows are 1-indexed and row 1 is the header.
   for (let i = 1; i < idsRes.data.values.length; i++) {
     if (idsRes.data.values[i][0] === id) { rowNumber = i + 1; break }
   }
@@ -328,8 +330,9 @@ export async function getJobById(
     spreadsheetId: getSheetId(),
     range: `'${SHEET_TABS.JOBS_FEED}'!A${rowNumber}:Y${rowNumber}`,
   })
-  if (!rowRes.data.values?.[0]) return null
-  return { job: rowToJobPosting(rowRes.data.values[0].map(String)), row: rowNumber }
+  const rowData = rowRes.data.values?.[0]
+  if (!rowData?.length) return null
+  return { job: rowToJobPosting(rowData.map(String)), row: rowNumber }
 }
 
 export async function getPipelineEntries(): Promise<PipelineEntry[]> {
