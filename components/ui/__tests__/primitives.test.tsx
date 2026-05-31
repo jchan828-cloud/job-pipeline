@@ -27,6 +27,15 @@ describe('Button', () => {
   })
 })
 
+describe('Skeleton', () => {
+  it('renders without crashing and is hidden from assistive tech', () => {
+    const { container } = render(<Skeleton height={20} />)
+    const el = container.firstChild as HTMLElement
+    expect(el).toBeInTheDocument()
+    expect(el).toHaveAttribute('aria-hidden')
+  })
+})
+
 describe('EmptyState', () => {
   it('renders message and optional action', () => {
     const onAction = vi.fn()
