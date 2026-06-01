@@ -29,14 +29,14 @@ export function JobFeedView() {
 
   const selectedJob = filteredJobs.find(j => j.id === selectedId) ?? null
 
-  function updateParams(updates: Record<string, string | null>) {
+  const updateParams = useCallback((updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString())
     for (const [key, value] of Object.entries(updates)) {
       if (value === null) params.delete(key)
       else params.set(key, value)
     }
     router.replace(`/?${params.toString()}`, { scroll: false })
-  }
+  }, [searchParams, router])
 
   function handleFilterChange(f: FilterState) {
     updateParams({
@@ -50,16 +50,16 @@ export function JobFeedView() {
     updateParams({ job: job.id })
   }
 
-  function handleClose() {
+  const handleClose = useCallback(() => {
     updateParams({ job: null })
-  }
+  }, [updateParams])
 
-  async function handleInterest(id: string, action: 'interested' | 'skipped') {
+  const handleInterest = useCallback(async (id: string, action: 'interested' | 'skipped') => {
     const job = filteredJobs.find(j => j.id === id)
     if (!job) return
     if (action === 'interested') await markInterested(job)
     else await markSkipped(job)
-  }
+  }, [filteredJobs, markInterested, markSkipped])
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -71,11 +71,16 @@ export function JobFeedView() {
 
     if (e.key === 'ArrowDown') {
       e.preventDefault()
-      const next = filteredJobs[currentIdx + 1]
-      if (next) updateParams({ job: next.id })
+      if (currentIdx === -1) {
+        if (filteredJobs.length > 0) updateParams({ job: filteredJobs[0].id })
+      } else {
+        const next = filteredJobs[currentIdx + 1]
+        if (next) updateParams({ job: next.id })
+      }
     }
     if (e.key === 'ArrowUp') {
       e.preventDefault()
+      if (currentIdx <= 0) return  // nothing selected or already at top
       const prev = filteredJobs[currentIdx - 1]
       if (prev) updateParams({ job: prev.id })
     }
@@ -85,7 +90,7 @@ export function JobFeedView() {
     if (e.key === 's' && selectedJob) {
       handleInterest(selectedJob.id, 'skipped')
     }
-  }, [filteredJobs, selectedId, selectedJob, searchParams, router])
+  }, [filteredJobs, selectedId, selectedJob, updateParams, handleClose, handleInterest])
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
