@@ -27,7 +27,8 @@ export async function PATCH(
 
     await updateJobStatus(result.row, status)
 
-    if (status === 'Interested') {
+    // Only append to pipeline if transitioning TO Interested (not if already Interested)
+    if (status === 'Interested' && result.job.status !== 'Interested') {
       await appendPipelineEntry(result.job)
     }
 

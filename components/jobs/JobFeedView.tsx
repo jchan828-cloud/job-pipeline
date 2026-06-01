@@ -1,7 +1,7 @@
 // components/jobs/JobFeedView.tsx
 'use client'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import type { FilterState, JobPosting } from '../../lib/types'
 import { useJobs } from '../../hooks/useJobs'
 import { useJobActions } from '../../hooks/useJobActions'
@@ -24,10 +24,11 @@ export function JobFeedView() {
     minScore: null,
   }
 
-  const { filteredJobs, counts, companies, isLoading, error } = useJobs(filters)
+  const { jobs, filteredJobs, counts, companies, isLoading, error } = useJobs(filters)
   const { markInterested, markSkipped, loadingId } = useJobActions()
+  const [actionError, setActionError] = useState<string | null>(null)
 
-  const selectedJob = filteredJobs.find(j => j.id === selectedId) ?? null
+  const selectedJob = jobs.find(j => j.id === selectedId) ?? null
 
   const updateParams = useCallback((updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -55,11 +56,16 @@ export function JobFeedView() {
   }, [updateParams])
 
   const handleInterest = useCallback(async (id: string, action: 'interested' | 'skipped') => {
-    const job = filteredJobs.find(j => j.id === id)
+    const job = jobs.find(j => j.id === id)
     if (!job) return
-    if (action === 'interested') await markInterested(job)
-    else await markSkipped(job)
-  }, [filteredJobs, markInterested, markSkipped])
+    setActionError(null)
+    try {
+      if (action === 'interested') await markInterested(job)
+      else await markSkipped(job)
+    } catch {
+      setActionError('Action failed — please try again')
+    }
+  }, [jobs, markInterested, markSkipped])
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -146,6 +152,20 @@ export function JobFeedView() {
         style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
         className="job-detail-panel"
       >
+        {actionError && (
+          <div style={{
+            padding: '8px 16px',
+            background: 'var(--red-bg)',
+            color: '#fca5a5',
+            fontSize: 12,
+            borderBottom: '1px solid var(--border)',
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            {actionError}
+            <button onClick={() => setActionError(null)} style={{ color: '#fca5a5', background: 'none', border: 'none', cursor: 'pointer', fontSize: 11 }}>✕</button>
+          </div>
+        )}
         {selectedJob ? (
           <JobDetail
             job={selectedJob}

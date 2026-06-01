@@ -41,8 +41,8 @@ export function PipelineView() {
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 0 40px' }}>
-      <div style={{ padding: '16px 16px 8px', borderBottom: '1px solid var(--border)' }}>
+    <div style={{ height: '100%', overflowY: 'auto', maxWidth: 720, margin: '0 auto', padding: '0 0 40px' }}>
+      <div style={{ padding: '16px 16px 8px', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, background: 'var(--bg-base)', zIndex: 1 }}>
         <h2 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>
           {entries.length} active application{entries.length !== 1 ? 's' : ''}
         </h2>

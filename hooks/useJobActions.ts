@@ -24,8 +24,6 @@ export function useJobActions() {
       })
       if (!res.ok) throw new Error('Update failed')
     } catch (err) {
-      // Rollback on error
-      await mutate('/api/jobs')
       throw err
     } finally {
       setLoadingId(null)
