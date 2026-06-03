@@ -1,0 +1,13 @@
+{
+  "models": ["claude-haiku", "wai-llama-3.3-70b", "wai-llama-3.1-8b", "gpt-4o-mini", "groq-llama-3.3-70b"],
+  "jobs": [
+    {
+      "title": "Senior Category Manager, Labor & Professional Services",
+      "company": "Acme Bank",
+      "location": "Toronto, ON (Hybrid)",
+      "url": "https://example.com/jobs/1",
+      "source": "sample",
+      "description": "Lead strategic sourcing for a $250M contingent labor and professional services portfolio. 10+ years procurement experience, SCMP preferred, bachelor's degree required. SAP Ariba and Coupa. Manage a team of 4. English required."
+    }
+  ]
+}
