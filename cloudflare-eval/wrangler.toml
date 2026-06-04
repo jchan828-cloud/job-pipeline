@@ -1,0 +1,42 @@
+# Cloudflare Worker: LLM eval harness for the job-pipeline scoring step.
+# This is a STANDALONE worker, intentionally decoupled from the Next.js app
+# (which is on Next 16 + OpenNext territory). Deploy it on its own.
+#
+# Setup:
+#   1. npm install
+#   2. npx wrangler d1 create job-pipeline-llm-eval   # paste the id below
+#   3. npx wrangler d1 execute job-pipeline-llm-eval --remote --file=./schema.sql
+#   4. Create an AI Gateway in the dashboard (AI > AI Gateway), note its name.
+#   5. Set secrets (see README). Then: npx wrangler deploy
+
+name = "job-pipeline-llm-eval"
+main = "src/index.ts"
+compatibility_date = "2026-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Workers AI binding (used for fallback / direct calls; primary path is the Gateway).
+[ai]
+binding = "AI"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "job-pipeline-llm-eval"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[vars]
+# Your Cloudflare account id (33-hex). Find it in the dashboard URL or `wrangler whoami`.
+CF_ACCOUNT_ID = "REPLACE_WITH_YOUR_ACCOUNT_ID"
+# The AI Gateway name you created in the dashboard.
+AI_GATEWAY_NAME = "job-eval"
+# Which registered model is the reference for agreement/score-delta comparisons.
+BASELINE_MODEL = "claude-haiku"
+# Max jobs scored per /run call, to stay under Worker CPU/subrequest limits.
+MAX_JOBS_PER_RUN = "25"
+
+# Secrets (do NOT put these here — set with `wrangler secret put <NAME>`):
+#   ANTHROPIC_API_KEY      - for the Claude baseline
+#   OPENAI_API_KEY         - for gpt-* challengers
+#   GROQ_API_KEY           - for Groq-hosted open models
+#   CF_WORKERS_AI_TOKEN    - API token with Workers AI read for the gateway path
+#   CF_AIG_TOKEN           - OPTIONAL: gateway authorization token if the gateway
+#                            is set to "Authenticated"
